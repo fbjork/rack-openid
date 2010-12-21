@@ -141,7 +141,7 @@ module Rack #:nodoc:
 
         oidresp = timeout_protection_from_identity_server {
           consumer = ::OpenID::Consumer.new(session, @store)
-          consumer.complete(flatten_params(req.params), req.url)
+          consumer.complete(flatten_params(req.params), request_url(req))
         }
 
         env[RESPONSE] = oidresp
@@ -181,10 +181,12 @@ module Rack #:nodoc:
       end
 
       def realm_url(req)
-        url = req.scheme + "://"
+        scheme = req.env["HTTP_X_FORWARDED_PROTO"] || req.scheme
+        port = req.port
+
+        url = scheme + "://"
         url << req.host
 
-        scheme, port = req.scheme, req.port
         if scheme == "https" && port != 443 ||
             scheme == "http" && port != 80
           url << ":#{port}"
