@@ -186,6 +186,7 @@ module Rack #:nodoc:
           port = 443
         else
           port = req.port
+        end
 
         url = scheme + "://"
         url << req.host
