@@ -182,7 +182,10 @@ module Rack #:nodoc:
 
       def realm_url(req)
         scheme = req.env["HTTP_X_FORWARDED_PROTO"] || req.scheme
-        port = req.port
+        if scheme == 'https'
+          port = 443
+        else
+          port = req.port
 
         url = scheme + "://"
         url << req.host
